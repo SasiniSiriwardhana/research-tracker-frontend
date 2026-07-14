@@ -1,46 +1,211 @@
-# Getting Started with Create React App
+# 🔬 Research Project Tracker — Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A responsive, role-based React + TypeScript single-page application for managing research projects, milestones, and documents. Built as the frontend for the CMJD Final Project.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📋 Assignment Context
 
-### `npm start`
+**Assignment 2: Front-End Development with React**  
+Educational Institute: IJSE (Institute of Java and Software Engineering)  
+Backend: Spring Boot REST API with JWT authentication
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🛠️ Tech Stack
 
-### `npm test`
+| Technology | Purpose |
+|---|---|
+| React 18 (CRA TypeScript) | UI framework |
+| TypeScript | Static typing |
+| React Router DOM v6 | SPA navigation |
+| Axios | HTTP client + interceptors |
+| React Bootstrap 5 | Responsive UI components |
+| Context API | Global auth state |
+| jwt-decode | Decode JWT tokens client-side |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🚀 Setup Instructions
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
+- Node.js ≥ 18
+- Spring Boot backend running on `http://localhost:8081`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd Research-Tracker-Frontend
 
-### `npm run eject`
+# 2. Install dependencies
+npm install
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+# 3. Start development server
+npm start
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The app runs at `http://localhost:3000`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Backend must be running first
+Ensure your Spring Boot backend is started:
+```bash
+cd ../Research-Tracker-Backend
+./mvnw spring-boot:run
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+---
 
-## Learn More
+## 📁 Project Structure
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+src/
+├── assets/               # Static assets (images, icons)
+├── components/
+│   ├── common/           # Reusable: Spinner, AlertMessage, StatusBadge
+│   └── layout/           # AppNavbar
+├── context/
+│   └── AuthContext.tsx   # JWT auth state + hooks
+├── hooks/                # Custom hooks (future use)
+├── interfaces/
+│   └── index.ts          # All TypeScript interfaces mirroring backend DTOs
+├── layouts/
+│   └── MainLayout.tsx    # Shell with navbar + outlet
+├── pages/
+│   ├── auth/             # LoginPage, RegisterPage
+│   ├── dashboard/        # DashboardPage
+│   ├── projects/         # ProjectsPage, ProjectDetailPage
+│   ├── milestones/       # MilestonesPage
+│   ├── documents/        # DocumentsPage
+│   └── admin/            # AdminPage (ADMIN role only)
+├── routes/
+│   └── ProtectedRoute.tsx # ProtectedRoute, RoleRoute, GuestRoute
+├── services/             # Axios API service layer
+│   ├── axiosInstance.ts  # Base config + interceptors
+│   ├── authService.ts
+│   ├── projectService.ts
+│   ├── milestoneService.ts
+│   ├── documentService.ts
+│   └── userService.ts
+├── styles/
+│   └── global.css        # Global design system
+└── utils/                # Utility helpers (future use)
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
+
+## 🔒 Authentication Flow
+
+1. User submits credentials → `POST /api/auth/login`
+2. Backend returns `{ token, userId, username, role }`
+3. Token stored in `localStorage`
+4. Every Axios request automatically attaches `Authorization: Bearer <token>`
+5. On 401 response → token cleared, user redirected to `/login`
+6. JWT expiry checked client-side on every page load
+
+---
+
+## 🧭 Routes
+
+| Path | Component | Access |
+|---|---|---|
+| `/login` | LoginPage | Public (guest only) |
+| `/register` | RegisterPage | Public (guest only) |
+| `/dashboard` | DashboardPage | All authenticated users |
+| `/projects` | ProjectsPage | All authenticated users |
+| `/projects/:id` | ProjectDetailPage | All authenticated users |
+| `/projects/:id/milestones` | MilestonesPage | All authenticated users |
+| `/projects/:id/documents` | DocumentsPage | All authenticated users |
+| `/admin` | AdminPage | ADMIN role only |
+
+---
+
+## 👤 Role-Based Access
+
+| Feature | ADMIN | PI | MEMBER | VIEWER |
+|---|:---:|:---:|:---:|:---:|
+| View projects | ✅ | ✅ | ✅ | ✅ |
+| Create project | ✅ | ✅ | ❌ | ❌ |
+| Edit project | ✅ | ✅ | ❌ | ❌ |
+| Delete project | ✅ | ❌ | ❌ | ❌ |
+| Add milestone | ✅ | ✅ | ✅ | ❌ |
+| Edit milestone | ✅ | ✅ | ✅ | ❌ |
+| Delete milestone | ✅ | ✅ | ❌ | ❌ |
+| Upload document | ✅ | ✅ | ✅ | ❌ |
+| Delete document | ✅ | ✅ | ❌ | ❌ |
+| Admin panel | ✅ | ❌ | ❌ | ❌ |
+
+---
+
+## 📡 Backend API Endpoint Summary
+
+### Authentication
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/signup` | Register new user (returns JWT) |
+| POST | `/api/auth/login` | Login (returns JWT) |
+
+### Projects
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/projects` | List all projects |
+| GET | `/api/projects/:id` | Get project by ID |
+| POST | `/api/projects` | Create project (ADMIN, PI) |
+| PUT | `/api/projects/:id` | Update project (ADMIN, PI) |
+| PATCH | `/api/projects/:id/status` | Update status (ADMIN, PI) |
+| DELETE | `/api/projects/:id` | Delete project (ADMIN) |
+
+### Milestones
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/projects/:id/milestones` | List milestones for project |
+| POST | `/api/projects/:id/milestones` | Add milestone (ADMIN, PI, MEMBER) |
+| PUT | `/api/milestones/:id` | Update milestone (ADMIN, PI, MEMBER) |
+| DELETE | `/api/milestones/:id` | Delete milestone (ADMIN, PI) |
+
+### Documents
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/projects/:id/documents` | List documents for project |
+| POST | `/api/projects/:id/documents` | Upload document (ADMIN, PI, MEMBER) |
+| DELETE | `/api/documents/:id` | Delete document (ADMIN, PI) |
+
+### Users (Admin Only)
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/users` | List all users (ADMIN) |
+| GET | `/api/users/:id` | Get user by ID |
+| DELETE | `/api/users/:id` | Delete user (ADMIN) |
+
+---
+
+## 🌿 Git Branching Strategy
+
+```
+main         ← stable production-ready code
+development  ← integration branch
+feat/*       ← individual feature branches
+fix/*        ← bug fix branches
+```
+
+### Commit Message Convention
+```
+feat: add project creation modal
+fix: handle 401 token expiry redirect
+refactor: extract StatusBadge component
+docs: update README with API endpoints
+```
+
+---
+
+## 📸 Screenshots
+
+> Add screenshots after running the application locally.
+
+---
+
+## 👨‍💻 Author
+
+**Chanindu Imanjith**  
+CMJD Final Project — Institute of Java and Software Engineering (IJSE)
