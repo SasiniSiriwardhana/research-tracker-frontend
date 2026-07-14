@@ -35,67 +35,87 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="fade-in">
       {/* Welcome header */}
-      <div className="mb-4">
-        <h1 className="page-title">Welcome back, {user?.username} 👋</h1>
-        <p className="text-muted">Here's an overview of the research portfolio.</p>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Welcome back, {user?.username} ✨</h1>
+          <p className="text-muted mt-1 mb-0">Here's what's happening with your research portfolio today.</p>
+        </div>
+        <div>
+          <Link to="/projects/new" className="btn btn-primary shadow-sm">
+            + New Project
+          </Link>
+        </div>
       </div>
 
       <AlertMessage message={error} onClose={() => setError(null)} />
 
       {/* Stat cards */}
-      <Row className="g-3 mb-4">
+      <Row className="g-4 mb-5">
         {[
-          { label: 'Total Projects', value: counts.total,     color: '#4f46e5', icon: '📁' },
-          { label: 'Active',         value: counts.active,    color: '#16a34a', icon: '🚀' },
-          { label: 'Completed',      value: counts.completed, color: '#0ea5e9', icon: '✅' },
-          { label: 'Planning',       value: counts.planning,  color: '#d97706', icon: '📋' },
+          { label: 'Total Projects', value: counts.total,     color: '#6366f1', bg: '#eef2ff', icon: '✦' },
+          { label: 'Active',         value: counts.active,    color: '#10b981', bg: '#d1fae5', icon: '🚀' },
+          { label: 'Completed',      value: counts.completed, color: '#3b82f6', bg: '#dbeafe', icon: '✓' },
+          { label: 'Planning',       value: counts.planning,  color: '#f59e0b', bg: '#fef3c7', icon: '◎' },
         ].map((stat) => (
           <Col key={stat.label} xs={12} sm={6} xl={3}>
-            <div className="stat-card d-flex justify-content-between align-items-center"
-                 style={{ background: `linear-gradient(135deg, ${stat.color}, ${stat.color}cc)` }}>
-              <div>
-                <div className="stat-number">{loading ? '—' : stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
+            <div className="stat-card-modern">
+              <div className="stat-icon-wrapper" style={{ backgroundColor: stat.bg, color: stat.color }}>
+                {stat.icon}
               </div>
-              <div className="stat-icon">{stat.icon}</div>
+              <div className="stat-info">
+                <div className="stat-label-modern">{stat.label}</div>
+                <div className="stat-number-modern">{loading ? '—' : stat.value}</div>
+              </div>
             </div>
           </Col>
         ))}
       </Row>
 
       {/* Recent projects */}
-      <Card>
-        <Card.Header className="d-flex justify-content-between align-items-center">
-          <span>Recent Projects</span>
-          <Link to="/projects" className="btn btn-sm btn-outline-primary">View All</Link>
+      <Card className="border-0 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
+        <Card.Header className="bg-white border-bottom-0 pt-4 pb-3 px-4 d-flex justify-content-between align-items-center">
+          <h5 className="mb-0 fw-bold" style={{ color: 'var(--text-primary)' }}>Recent Activity</h5>
+          <Link to="/projects" className="btn btn-sm btn-light" style={{ fontWeight: 600, color: 'var(--primary)' }}>
+            View All Projects
+          </Link>
         </Card.Header>
         <Card.Body className="p-0">
           {loading ? (
-            <Spinner />
+            <div className="py-5 text-center"><Spinner /></div>
           ) : recent.length === 0 ? (
-            <p className="text-muted text-center py-4">No projects found.</p>
+            <div className="py-5 text-center text-muted">
+              <div style={{ fontSize: '3rem', opacity: 0.3, marginBottom: '1rem' }}>📭</div>
+              No projects found in the system.
+            </div>
           ) : (
             <div className="table-responsive">
               <table className="table table-hover mb-0">
                 <thead>
                   <tr>
-                    <th>Title</th>
-                    <th>PI</th>
+                    <th className="px-4">Project Title</th>
+                    <th>Lead Investigator</th>
                     <th>Status</th>
                     <th>Start Date</th>
-                    <th></th>
+                    <th className="text-end px-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recent.map((p) => (
                     <tr key={p.id}>
-                      <td className="fw-semibold">{p.title}</td>
-                      <td>{p.piName || '—'}</td>
-                      <td><StatusBadge status={p.status} /></td>
-                      <td>{p.startDate ?? '—'}</td>
+                      <td className="px-4 fw-semibold">{p.title}</td>
                       <td>
-                        <Link to={`/projects/${p.id}`} className="btn btn-sm btn-outline-secondary">
-                          View
+                        <div className="d-flex align-items-center gap-2">
+                          <div className="rounded-circle bg-light d-flex align-items-center justify-content-center text-muted" style={{ width: '28px', height: '28px', fontSize: '0.7rem' }}>
+                            {p.piName ? p.piName.substring(0, 2).toUpperCase() : 'NA'}
+                          </div>
+                          {p.piName || 'Unassigned'}
+                        </div>
+                      </td>
+                      <td><StatusBadge status={p.status} /></td>
+                      <td>{p.startDate ? new Date(p.startDate).toLocaleDateString() : '—'}</td>
+                      <td className="text-end px-4">
+                        <Link to={`/projects/${p.id}`} className="btn btn-sm btn-light text-primary" style={{ fontWeight: 500 }}>
+                          Details
                         </Link>
                       </td>
                     </tr>

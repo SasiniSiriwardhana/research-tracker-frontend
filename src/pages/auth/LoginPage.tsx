@@ -39,64 +39,84 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="auth-card">
-        <div className="auth-logo">🔬</div>
-        <h1 className="auth-title">Research Tracker</h1>
-        <p className="auth-subtitle">Sign in to your account</p>
+    <div className="auth-page-container">
+      {/* Left side: branding and illustration area */}
+      <div className="auth-left-pane d-none d-md-flex">
+        <div style={{ zIndex: 1, textAlign: 'center' }}>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '1rem' }}>
+            Welcome to <br /> Research Portal
+          </h2>
+          <p style={{ fontSize: '1.1rem', opacity: 0.9 }}>
+            A powerful platform to manage, track, and collaborate on cutting-edge research projects.
+          </p>
+        </div>
+      </div>
 
-        <AlertMessage message={error} onClose={() => setError(null)} />
+      {/* Right side: login form */}
+      <div className="auth-right-pane">
+        <div className="auth-card-modern">
+          <div className="text-center">
+            <span className="auth-logo-modern">✦</span>
+            <h1 className="auth-title-modern">Sign In</h1>
+            <p className="auth-subtitle-modern">Access your dashboard</p>
+          </div>
 
-        <Form onSubmit={handleSubmit} noValidate>
-          <Form.Group className="mb-3" controlId="login-username">
-            <Form.Label className="fw-semibold">Username</Form.Label>
-            <Form.Control
-              type="text"
-              name="username"
-              placeholder="Enter username"
-              value={form.username}
-              onChange={handleChange}
-              autoFocus
-              required
-            />
-          </Form.Group>
+          <AlertMessage message={error} onClose={() => setError(null)} />
 
-          <Form.Group className="mb-4" controlId="login-password">
-            <Form.Label className="fw-semibold">Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
+          <Form onSubmit={handleSubmit} noValidate>
+            <Form.Group className="mb-3" controlId="login-username">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                name="username"
+                placeholder="e.g. johndoe"
+                value={form.username}
+                onChange={handleChange}
+                autoFocus
+                required
+              />
+            </Form.Group>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-100"
-            disabled={loading}
-            id="login-submit-btn"
-          >
-            {loading ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" />
-                Signing in…
-              </>
-            ) : (
-              'Sign In'
-            )}
-          </Button>
-        </Form>
+            <Form.Group className="mb-4" controlId="login-password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
 
-        <p className="text-center mt-3 mb-0 text-muted" style={{ fontSize: '0.875rem' }}>
-          Don't have an account?{' '}
-          <Link to="/register" className="fw-semibold text-decoration-none">
-            Register here
-          </Link>
-        </p>
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-100 mb-3"
+              disabled={loading}
+              id="login-submit-btn"
+              style={{ padding: '0.75rem' }}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" />
+                  Authenticating...
+                </>
+              ) : (
+                'Sign In to Dashboard'
+              )}
+            </Button>
+          </Form>
+
+          <div className="text-center mt-4">
+            <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
+              Don't have an account yet?{' '}
+              <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>
+                Create one now
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
