@@ -55,6 +55,16 @@ cd ../Research-Tracker-Backend
 ./mvnw spring-boot:run
 ```
 
+### Test Credentials (Default)
+To log in and test the application, use the following credentials.
+
+| Role | Username | Password |
+|---|---|---|
+| **ADMIN** | `admin2@research.edu` | `password123` |
+| **PI** | `dr.silva@research.edu` | `password123` |
+| **MEMBER** | `kamal.perera@research.edu` | `password123` |
+| **VIEWER** | `viewer@research.edu` | `password123` |
+
 ---
 
 ## 📁 Project Structure
